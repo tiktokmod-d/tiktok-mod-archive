@@ -22,7 +22,7 @@
 
 | 版本号 | 架构 | 特性说明 | 更新日期 | 下载链接 |
 | :--- | :--- | :--- | :--- | :--- |
-| 最新版本 | arm64-v8a | 移除广告 / 绕过区域限制 / 允许下载 | 2025-12-22 | [点击前往 Releases](https://github.com/tiktokmod-d/tiktok-mod-archive/releases) |
+| 最新版本 | arm64-v8a | 移除广告 / 绕过区域限制 / 允许下载 | 2025-06-08 | [点击前往 Releases](https://github.com/tiktokmod-d/tiktok-mod-archive/releases) |
 | 历史版本 | universal | 插件版或旧版归档 | 持续更新 | [点击前往 Releases](https://github.com/tiktokmod-d/tiktok-mod-archive/releases) |
 
 ## ⚠️ 免责声明 (Disclaimer)
