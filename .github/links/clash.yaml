@@ -16,7 +16,7 @@ dns:
     - tls://1.0.0.1:853
     - tls://dns.google:853
 proxies:
-  - {name: 公益节点来源：cloud.yuncataff.top, server: cloud.yuncataff.top, port: 443, type: vless, uuid: 28746fbc-1f07-4c18-99e2-610b2565f952, tls: true, tfo: false, skip-cert-verify: false, servername: cloud.yuncataff.top, network: ws, ws-opts: {path: "/vlwstlscdn?ed=2560", headers: {Host: cloud.yuncataff.top}}}
+  - {name: 公益节点来源：tiktokmod-d.github.io, server: tiktokmod-d.github.io, port: 443, type: vless, uuid: 28746fbc-1f07-4c18-99e2-610b2565f952, tls: true, tfo: false, skip-cert-verify: false, servername: tiktokmod-d.github.io, network: ws, ws-opts: {path: "/vlwstlscdn?ed=2560", headers: {Host: tiktokmod-d.github.io}}}
 proxy-groups:
   - name: 🚀 节点选择
     type: select
