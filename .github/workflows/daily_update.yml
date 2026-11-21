@@ -1,46 +1,55 @@
-name: Auto Update VPN Nodes
+name: Auto Update
 
 on:
   schedule:
-    # 北京时间每天早上 8 点运行 (UTC 时间 0 点)
-    - cron: '0 1 * * *'
-  workflow_dispatch: # 允许手动点击按钮运行
+    # 每天固定在 UTC 00:00（北京时间早上 08:00）运行
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 支持手动点击测试
 
 jobs:
-  update-readme:
+  refresh:
     runs-on: ubuntu-latest
-    
     permissions:
-      contents: write  # 赋予写权限，以便提交修改
+      contents: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        run: |
-          pip install requests pytz
-
-      - name: Run update script
-        run: |
-          python .github/scripts/update_links.py
-
-      - name: Commit and Push changes
+      - name: Update dates and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 检查是否有文件变动
+
+          TARGET="README.md"
+          [ ! -f "$TARGET" ] && exit 0
+
+          DATE_DOT=$(date +'%Y.%m.%d')       # 例如: 2026.11.09
+          DATE_DASH=$(date +'%Y-%m-%d')     # 例如: 2026-11-09
+          NOW_UTC=$(date -u +'%Y-%m-%d %H:%M:%S')
+
+          # 1. 优先扫描并替换包含“更新/Update”行的可见日期格式
+          # 匹配 202x.xx.xx 格式（如：🗓️ 更新日志 (2026.11.06)）
+          sed -i -E "/(更新|Update|update)/s/202[0-9]\.[0-9]{2}\.[0-9]{2}/${DATE_DOT}/g" "$TARGET"
+          # 匹配 202x-xx-xx 格式（如：最后更新时间: 2026-11-06）
+          sed -i -E "/(更新|Update|update)/s/202[0-9]-[0-9]{2}-[0-9]{2}/${DATE_DASH}/g" "$TARGET"
+
+          # 2. 保底机制：如果上述可见日期今天已经是最新的，或者仓库压根没有显式日期
+          # 则自动在末尾隐形更新/追加一行注释，确保每天都有 Diff 产生
+          if [ -z "$(git status --porcelain)" ]; then
+            if grep -q "<!-- last-update:" "$TARGET"; then
+              sed -i "s/<!-- last-update:.*-->/<!-- last-update: ${NOW_UTC} -->/" "$TARGET"
+            else
+              echo -e "\n<!-- last-update: ${NOW_UTC} -->" >> "$TARGET"
+            fi
+          fi
+
+          # 3. 提交并推送
           if [ -n "$(git status --porcelain)" ]; then
-            git add README.md
-            git commit -m "🚀 Auto Update: Verified VPN nodes list [$(date +'%Y-%m-%d')]"
+            git add "$TARGET"
+            git commit -m "update"
             git push
-            echo "Changes pushed successfully."
+            echo "Successfully updated."
           else
-            echo "No changes to commit."
+            echo "Nothing to update."
           fi
